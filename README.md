@@ -10,7 +10,7 @@ Personal dotfiles repository containing my development environment configuration
 
 ```bash
 # Clone the repository
-git clone <your-repo-url> ~/Workspace/dotfiles
+git clone https://github.com/noestelar/dotfiles.git ~/Workspace/dotfiles
 
 # Run the install script
 ./install.sh
