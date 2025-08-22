@@ -23,3 +23,10 @@ ln -s "$DOTFILES_DIR/nvim/kickstart.nvim" "$HOME/.config/nvim"
 
 echo "Dotfiles setup complete!"
 echo "Your nvim config is now symlinked from: $DOTFILES_DIR/nvim/kickstart.nvim"
+
+
+keep_sudo_alive(){
+	while true; do sudo -n true; sleep 60; done 2>/dev/null &
+	}
+
+
