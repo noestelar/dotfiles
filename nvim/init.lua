@@ -909,21 +909,20 @@ require('lazy').setup({
   -- Highlight todo, notes, etc in comments
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
 
+  -- Snacks.nvim (dependency for Claude Code)
+  { 'folke/snacks.nvim' },
+
   -- Claude Code integration
   {
     'coder/claudecode.nvim',
-    event = 'VimEnter',
-    opts = {
-      -- Optional: Configure keymaps for Claude Code
-      keymaps = {
-        open_chat = '<leader>cc',     -- Open Claude Code chat
-        new_chat = '<leader>cn',      -- Start a new chat
-        toggle_chat = '<leader>ct',   -- Toggle chat visibility
-      },
+    dependencies = { 'folke/snacks.nvim' },
+    config = true,
+    keys = {
+      { '<leader>a', nil, desc = 'AI/Claude Code' },
+      { '<leader>ac', '<cmd>ClaudeCode<cr>', desc = 'Toggle Claude Code' },
+      { '<leader>as', '<cmd>ClaudeCodeSend<cr>', desc = 'Send to Claude', mode = { 'n', 'v' } },
+      { '<leader>aa', '<cmd>ClaudeCodeAdd<cr>', desc = 'Add file to Claude context' },
     },
-    config = function(_, opts)
-      require('claudecode').setup(opts)
-    end,
   },
 
   { -- Collection of various small independent plugins/modules
