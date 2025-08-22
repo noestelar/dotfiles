@@ -909,6 +909,23 @@ require('lazy').setup({
   -- Highlight todo, notes, etc in comments
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
 
+  -- Claude Code integration
+  {
+    'coder/claudecode.nvim',
+    event = 'VimEnter',
+    opts = {
+      -- Optional: Configure keymaps for Claude Code
+      keymaps = {
+        open_chat = '<leader>cc',     -- Open Claude Code chat
+        new_chat = '<leader>cn',      -- Start a new chat
+        toggle_chat = '<leader>ct',   -- Toggle chat visibility
+      },
+    },
+    config = function(_, opts)
+      require('claudecode').setup(opts)
+    end,
+  },
+
   { -- Collection of various small independent plugins/modules
     'echasnovski/mini.nvim',
     config = function()
