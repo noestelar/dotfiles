@@ -1,6 +1,7 @@
 # kickstart.nvim
 
 ## Introduction
+NoeStelar's Dotfiles
 
 A starting point for Neovim that is:
 
