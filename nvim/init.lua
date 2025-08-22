@@ -676,7 +676,6 @@ require('lazy').setup({
       local servers = {
         -- clangd = {},
         -- gopls = {},
-        -- pyright = {},
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
@@ -684,8 +683,57 @@ require('lazy').setup({
         --    https://github.com/pmizio/typescript-tools.nvim
         --
         -- But for many setups, the LSP (`ts_ls`) will work just fine
-        -- ts_ls = {},
-        --
+
+        -- Python support with Pyright
+        pyright = {
+          settings = {
+            python = {
+              analysis = {
+                autoSearchPaths = true,
+                useLibraryCodeForTypes = true,
+                diagnosticMode = 'workspace',
+              },
+            },
+          },
+        },
+
+        -- Ruff LSP for Python linting and formatting
+        ruff = {
+          -- Ruff language server for fast Python linting
+          init_options = {
+            settings = {
+              args = {},
+            },
+          },
+        },
+
+        -- TypeScript/JavaScript support
+        ts_ls = {
+          settings = {
+            typescript = {
+              inlayHints = {
+                includeInlayParameterNameHints = 'all',
+                includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+                includeInlayFunctionParameterTypeHints = true,
+                includeInlayVariableTypeHints = true,
+                includeInlayPropertyDeclarationTypeHints = true,
+                includeInlayFunctionLikeReturnTypeHints = true,
+                includeInlayEnumMemberValueHints = true,
+              },
+            },
+            javascript = {
+              inlayHints = {
+                includeInlayParameterNameHints = 'all',
+                includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+                includeInlayFunctionParameterTypeHints = true,
+                includeInlayVariableTypeHints = true,
+                includeInlayPropertyDeclarationTypeHints = true,
+                includeInlayFunctionLikeReturnTypeHints = true,
+                includeInlayEnumMemberValueHints = true,
+              },
+            },
+          },
+        },
 
         lua_ls = {
           -- cmd = { ... },
@@ -780,7 +828,7 @@ require('lazy').setup({
     },
   },
 
-  { -- Autocompletion
+  { -- Autocompletion with ghost text (like Cursor, Claude Code, Gemini)
     'saghen/blink.cmp',
     event = 'VimEnter',
     version = '1.*',
@@ -789,92 +837,31 @@ require('lazy').setup({
       {
         'L3MON4D3/LuaSnip',
         version = '2.*',
-        build = (function()
-          -- Build Step is needed for regex support in snippets.
-          -- This step is not supported in many windows environments.
-          -- Remove the below condition to re-enable on windows.
-          if vim.fn.has 'win32' == 1 or vim.fn.executable 'make' == 0 then
-            return
-          end
-          return 'make install_jsregexp'
-        end)(),
-        dependencies = {
-          -- `friendly-snippets` contains a variety of premade snippets.
-          --    See the README about individual language/framework/plugin snippets:
-          --    https://github.com/rafamadriz/friendly-snippets
-          -- {
-          --   'rafamadriz/friendly-snippets',
-          --   config = function()
-          --     require('luasnip.loaders.from_vscode').lazy_load()
-          --   end,
-          -- },
-        },
+        build = function() require("luasnip.loaders.from_vscode").lazy_load() end,
         opts = {},
       },
-      'folke/lazydev.nvim',
+      'folke/lazydev.nvim', -- optional, for extra completion sources
     },
-    --- @module 'blink.cmp'
-    --- @type blink.cmp.Config
     opts = {
       keymap = {
-        -- 'default' (recommended) for mappings similar to built-in completions
-        --   <c-y> to accept ([y]es) the completion.
-        --    This will auto-import if your LSP supports it.
-        --    This will expand snippets if the LSP sent a snippet.
-        -- 'super-tab' for tab to accept
-        -- 'enter' for enter to accept
-        -- 'none' for no mappings
-        --
-        -- For an understanding of why the 'default' preset is recommended,
-        -- you will need to read `:help ins-completion`
-        --
-        -- No, but seriously. Please read `:help ins-completion`, it is really good!
-        --
-        -- All presets have the following mappings:
-        -- <tab>/<s-tab>: move to right/left of your snippet expansion
-        -- <c-space>: Open menu or open docs if already open
-        -- <c-n>/<c-p> or <up>/<down>: Select next/previous item
-        -- <c-e>: Hide menu
-        -- <c-k>: Toggle signature help
-        --
-        -- See :h blink-cmp-config-keymap for defining your own keymap
-        preset = 'default',
-
-        -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
-        --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
+        preset = 'super-tab', -- Use 'super-tab' preset for Tab to accept
       },
-
       appearance = {
-        -- 'mono' (default) for 'Nerd Font Mono' or 'normal' for 'Nerd Font'
-        -- Adjusts spacing to ensure icons are aligned
-        nerd_font_variant = 'mono',
+        -- Keep current appearance setting
+        nerd_font_variant = 'mono', -- Use Nerd Font if you have it
       },
-
       completion = {
-        -- By default, you may press `<c-space>` to show the documentation.
-        -- Optionally, set `auto_show = true` to show the documentation after a delay.
         documentation = { auto_show = false, auto_show_delay_ms = 500 },
       },
-
       sources = {
         default = { 'lsp', 'path', 'snippets', 'lazydev' },
         providers = {
           lazydev = { module = 'lazydev.integrations.blink', score_offset = 100 },
+          -- Claude Code integration is handled separately via the claudecode.nvim plugin
         },
       },
-
       snippets = { preset = 'luasnip' },
-
-      -- Blink.cmp includes an optional, recommended rust fuzzy matcher,
-      -- which automatically downloads a prebuilt binary when enabled.
-      --
-      -- By default, we use the Lua implementation instead, but you may enable
-      -- the rust implementation via `'prefer_rust_with_warning'`
-      --
-      -- See :h blink-cmp-config-fuzzy for more information
       fuzzy = { implementation = 'lua' },
-
-      -- Shows a signature help window while you type arguments for a function
       signature = { enabled = true },
     },
   },
@@ -926,6 +913,42 @@ require('lazy').setup({
       { '<leader>as', '<cmd>ClaudeCodeSend<cr>', desc = 'Send to Claude', mode = { 'n', 'v' } },
       { '<leader>aa', '<cmd>ClaudeCodeAdd<cr>', desc = 'Add file to Claude context' },
     },
+  },
+
+  -- GitHub Copilot for AI-powered completions
+  {
+    'zbirenbaum/copilot.lua',
+    cmd = 'Copilot',
+    event = 'InsertEnter',
+    config = function()
+      require('copilot').setup({
+        suggestion = {
+          enabled = true,
+          auto_trigger = true,
+          hide_during_completion = true,
+          debounce = 75,
+          keymap = {
+            accept = '<M-l>',      -- Alt+L to accept suggestion
+            accept_word = false,
+            accept_line = false,
+            next = '<M-]>',        -- Alt+] for next suggestion
+            prev = '<M-[>',        -- Alt+[ for previous suggestion
+            dismiss = '<C-]>',     -- Ctrl+] to dismiss
+          },
+        },
+        panel = { enabled = false },
+        filetypes = {
+          markdown = false,
+          help = false,
+          gitcommit = false,
+          gitrebase = false,
+          hgcommit = false,
+          svn = false,
+          cvs = false,
+          ['.'] = false,
+        },
+      })
+    end,
   },
 
   { -- Collection of various small independent plugins/modules
