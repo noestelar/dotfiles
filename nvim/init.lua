@@ -175,6 +175,9 @@ vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
 -- Diagnostic keymaps
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
+vim.keymap.set('n', '<leader>d', vim.diagnostic.open_float, { desc = 'Show [D]iagnostic in floating window' })
+vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next [D]iagnostic message' })
+vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous [D]iagnostic message' })
 
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
@@ -201,6 +204,21 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 
 -- Neo-tree keybindings (VSCode-like)
 vim.keymap.set('n', '<leader>e', ':Neotree focus<CR>', { desc = 'Focus file explorer', silent = true })
+
+-- Theme switching keymaps (with transparency support)
+vim.keymap.set('n', '<leader>to', function()
+  vim.cmd.colorscheme 'oxocarbon'
+  -- Restore transparency
+  vim.api.nvim_set_hl(0, 'Normal', { bg = 'none' })
+  vim.api.nvim_set_hl(0, 'NormalFloat', { bg = 'none' })
+end, { desc = '[T]heme [O]xocarbon', silent = true })
+
+vim.keymap.set('n', '<leader>tm', function()
+  vim.cmd.colorscheme 'hatsunemiku'
+  -- Restore transparency
+  vim.api.nvim_set_hl(0, 'Normal', { bg = 'none' })
+  vim.api.nvim_set_hl(0, 'NormalFloat', { bg = 'none' })
+end, { desc = '[T]heme [M]iku (Hatsune Miku)', silent = true })
 
 -- NOTE: Some terminals have colliding keymaps or are not able to send distinct keycodes
 -- vim.keymap.set("n", "<C-S-h>", "<C-w>H", { desc = "Move window to the left" })
@@ -348,7 +366,7 @@ require('lazy').setup({
       -- Document existing key chains
       spec = {
         { '<leader>s', group = '[S]earch' },
-        { '<leader>t', group = '[T]oggle' },
+        { '<leader>t', group = '[T]oggle/[T]heme' },
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
       },
     },
@@ -633,7 +651,13 @@ require('lazy').setup({
       -- See :help vim.diagnostic.Opts
       vim.diagnostic.config {
         severity_sort = true,
-        float = { border = 'rounded', source = 'if_many' },
+        float = { 
+          border = 'rounded', 
+          source = 'if_many',
+          width = 80,  -- Set width to handle longer messages
+          max_width = 120,  -- Max width for very long messages
+          wrap = true,  -- Enable text wrapping
+        },
         underline = { severity = vim.diagnostic.severity.ERROR },
         signs = vim.g.have_nerd_font and {
           text = {
@@ -844,7 +868,7 @@ require('lazy').setup({
     },
     opts = {
       keymap = {
-        preset = 'super-tab', -- Use 'super-tab' preset for Tab to accept
+        preset = 'enter', -- Use Enter to accept completions instead of Tab
       },
       appearance = {
         -- Keep current appearance setting
@@ -866,33 +890,27 @@ require('lazy').setup({
     },
   },
 
-  { -- You can easily change to a different colorscheme.
-    -- Change the name of the colorscheme plugin below, and then
-    -- change the command in the config to whatever the name of that colorscheme is.
-    --
-    -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-    'folke/tokyonight.nvim',
-    priority = 1000, -- Make sure to load this before all the other start plugins.
+  -- Colorscheme plugins
+  {
+    'nyoom-engineering/oxocarbon.nvim',
+    priority = 1000,
     config = function()
-      ---@diagnostic disable-next-line: missing-fields
-      require('tokyonight').setup {
-        transparent = true, -- Enable transparent background
-        styles = {
-          comments = { italic = false }, -- Disable italics in comments
-          sidebars = 'transparent', -- Make sidebars transparent
-          floats = 'transparent', -- Make floating windows transparent
-        },
-      }
+      vim.opt.background = 'dark'
+      -- Default theme: oxocarbon
+      vim.cmd.colorscheme 'oxocarbon'
+      -- Enable transparency
+      vim.api.nvim_set_hl(0, 'Normal', { bg = 'none' })
+      vim.api.nvim_set_hl(0, 'NormalFloat', { bg = 'none' })
+    end,
+  },
 
-      -- Load the colorscheme here.
-      -- Like many other themes, this one has different styles, and you could load
-      -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-night'
-      
-      -- Force transparency by clearing background highlight groups
-      vim.api.nvim_set_hl(0, 'Normal', { bg = 'NONE' })
-      vim.api.nvim_set_hl(0, 'NormalFloat', { bg = 'NONE' })
-      vim.api.nvim_set_hl(0, 'SignColumn', { bg = 'NONE' })
+  {
+    '4513ECHO/vim-colors-hatsunemiku',
+    priority = 1000,
+    config = function()
+      -- Alternative theme: Hatsune Miku
+      -- To use this theme instead of oxocarbon, uncomment the line below and comment out the oxocarbon line above:
+      -- vim.cmd.colorscheme 'hatsunemiku'
     end,
   },
 
