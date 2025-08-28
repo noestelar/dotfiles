@@ -84,9 +84,5 @@ require("lazy").setup({
 })
 
 vim.api.nvim_create_user_command("ToggleBackground", function()
-  vim.g.background_enabled = not vim.g.background_enabled
-  local current_colorscheme = vim.g.colors_name
-  -- Reload the colorscheme
-  require("lazy").reload({ plugins = { "gruvbox.nvim", "tokyonight.nvim" } })
-  set_colorscheme(current_colorscheme)
+  _G.toggle_background_with_persistence()
 end, {})
