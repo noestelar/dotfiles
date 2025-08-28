@@ -1111,6 +1111,14 @@ require("lazy").setup({
 				return "%2l:%-2v"
 			end
 
+			vim.api.nvim_create_autocmd("ColorScheme", {
+				pattern = "*",
+				callback = function()
+					vim.api.nvim_set_hl(0, "MiniStatuslineModeNormal", { bg = "#cad3f5", fg = "#292c3c" })
+					vim.api.nvim_set_hl(0, "MiniStatuslineModeInsert", { bg = "#a6da95", fg = "#292c3c" })
+				end,
+			})
+
 			-- ... and there is more!
 			--  Check out: https://github.com/echasnovski/mini.nvim
 		end,
