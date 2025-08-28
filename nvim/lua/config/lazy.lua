@@ -14,10 +14,41 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+local function set_colorscheme(name)
+  vim.g.colors_name = name
+  vim.cmd("colorscheme " .. name)
+end
+
 require("lazy").setup({
   spec = {
     -- add LazyVim and import its plugins
     { "LazyVim/LazyVim", import = "lazyvim.plugins" },
+    {
+      "ellisonleao/gruvbox.nvim",
+      priority = 1000,
+      config = function()
+        require("config.background")
+        local args = {}
+        if not vim.g.background_enabled then
+          args.transparent_mode = "both"
+        end
+        require("gruvbox").setup(args)
+        set_colorscheme("gruvbox")
+      end,
+    },
+    {
+      "folke/tokyonight.nvim",
+      config = function()
+        require("config.background")
+        local args = {}
+        if not vim.g.background_enabled then
+          args.transparent = true
+        end
+        require("tokyonight").setup(args)
+        set_colorscheme("tokyonight")
+      end,
+    },
+    
     -- import/override with your plugins
     { import = "plugins" },
   },
@@ -30,7 +61,7 @@ require("lazy").setup({
     version = false, -- always use the latest git commit
     -- version = "*", -- try installing the latest stable version for plugins that support semver
   },
-  install = { colorscheme = { "tokyonight", "habamax" } },
+  install = { colorscheme = { "tokyonight", "gruvbox" } },
   checker = {
     enabled = true, -- check for plugin updates periodically
     notify = false, -- notify on update
@@ -51,3 +82,11 @@ require("lazy").setup({
     },
   },
 })
+
+vim.api.nvim_create_user_command("ToggleBackground", function()
+  vim.g.background_enabled = not vim.g.background_enabled
+  local current_colorscheme = vim.g.colors_name
+  -- Reload the colorscheme
+  require("lazy").reload({ plugins = { "gruvbox.nvim", "tokyonight.nvim" } })
+  set_colorscheme(current_colorscheme)
+end, {})
