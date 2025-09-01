@@ -43,7 +43,7 @@ _G.toggle_background_with_persistence = function()
   elseif current_colorscheme == "rose-pine" then
     local args = {}
     if not vim.g.background_enabled then
-      args.styles = { transparency = true }
+      args.disable_background = true
     end
     require("rose-pine").setup(args)
   end

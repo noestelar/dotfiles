@@ -48,42 +48,25 @@ return {
     "rose-pine/neovim",
     name = "rose-pine",
     config = function()
+      require("config.background")
+      local args = {
+        variant = "main",
+        dark_variant = "main",
+        bold_vert_split = false,
+        dim_inactive_windows = false,
+        terminal_colors = true,
+        highlight_groups = {
+          -- Comment = { fg = "foam" },
+          -- VertSplit = { fg = "muted", bg = "muted" },
+        }
+      }
+      
+      if not vim.g.background_enabled then
+        args.disable_background = true
+      end
+      require("rose-pine").setup(args)
       vim.cmd("colorscheme rose-pine")
     end,
-    opts = {
-      variant = "main", -- auto, main, moon, or dawn
-      dark_variant = "main", -- main, moon, or dawn
-      bold_vert_split = false,
-      dim_inactive_windows = false,
-      terminal_colors = true,
-      groups = {
-        background = "base",
-        background_nc = "_experimental_ignore",
-        panel = "surface1",
-        border = "highlight_med",
-        comment = "muted",
-        link = "iris",
-        punctuation = "subtle",
-
-        error = "love",
-        hint = "iris",
-        info = "foam",
-        warn = "gold",
-
-        headings = {
-          h1 = "iris",
-          h2 = "foam",
-          h3 = "rose",
-          h4 = "gold",
-          h5 = "pine",
-          h6 = "foam",
-        }
-      },
-      highlight_groups = {
-        -- Comment = { fg = "foam" },
-        -- VertSplit = { fg = "muted", bg = "muted" },
-      }
-    }
   },
   {
     "echasnovski/mini.animate",
