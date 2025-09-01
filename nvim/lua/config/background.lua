@@ -40,6 +40,12 @@ _G.toggle_background_with_persistence = function()
       args.transparent = true
     end
     require("tokyonight").setup(args)
+  elseif current_colorscheme == "rose-pine" then
+    local args = {}
+    if not vim.g.background_enabled then
+      args.styles = { transparency = true }
+    end
+    require("rose-pine").setup(args)
   end
   
   -- Reapply the same colorscheme
