@@ -105,4 +105,18 @@ return {
       }
     end,
   },
+  {
+    "karb94/neoscroll.nvim",
+    config = function()
+      require('neoscroll').setup({})
+    end
+  },
+  {
+    "sphamba/smear-cursor.nvim",
+    opts = {
+      -- Optional: customize stiffness or color
+      stiffness = 0.6,
+      trailing_stiffness = 0.3,
+    },
+  },
 }
