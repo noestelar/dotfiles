@@ -21,3 +21,13 @@ keymap.set("n", "<C-m>", "<C-i>", opts)
 keymap.set("n", "<C-j>", function()
   vim.diagnostic.jump({ count = 1, float = true })
 end, opts)
+
+-- LSP references (function usages)
+keymap.set("n", "gr", function()
+  require("telescope.builtin").lsp_references()
+end, opts)
+
+-- LSP references on ctrl+click
+keymap.set("n", "<C-S-LeftMouse>", function()
+  require("telescope.builtin").lsp_references()
+end, opts)
