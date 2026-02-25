@@ -17,13 +17,13 @@ This section contains OpenClaw configuration files that need to be backed up sep
 - `openclaw/openclaw.json` - Main OpenClaw gateway configuration
 - `openclaw/cron/jobs.json` - Scheduled jobs
 - `openclaw/settings/voicewake.json` - Voice wake settings
+- `openclaw/env/clawdbot.env.tmpl` - Environment variables template (1Password references)
 - `systemd/openclaw-gateway.service` - Systemd service file
 
 ### What's NOT Included (use 1Password)
 
-- `~/.openclaw/credentials/` - OAuth tokens and API keys
+- `~/.openclaw/credentials/` - OAuth tokens and API keys (in vault)
 - `~/.openclaw/agents/*/agent/models.json` - Model configs with API keys
-- `~/.openclaw/env/` - Environment variables
 
 ### Installation
 
@@ -31,11 +31,18 @@ This section contains OpenClaw configuration files that need to be backed up sep
 # Clone the repository
 git clone https://github.com/noestelar/dotfiles.git ~/dotfiles
 
+# Create directories
+mkdir -p ~/.openclaw/cron ~/.openclaw/settings ~/.openclaw/env
+
 # Create symlinks for OpenClaw configs
-mkdir -p ~/.openclaw/cron ~/.openclaw/settings
 ln -sf ~/dotfiles/openclaw/openclaw.json ~/.openclaw/openclaw.json
 ln -sf ~/dotfiles/openclaw/cron/jobs.json ~/.openclaw/cron/jobs.json
 ln -sf ~/dotfiles/openclaw/settings/voicewake.json ~/.openclaw/settings/voicewake.json
+
+# Inject env variables from 1Password
+op inject -i ~/dotfiles/openclaw/env/clawdbot.env.tmpl -o ~/.openclaw/env/clawdbot.env
+
+# Link systemd service
 ln -sf ~/dotfiles/systemd/openclaw-gateway.service ~/.config/systemd/user/
 
 # Reload systemd
