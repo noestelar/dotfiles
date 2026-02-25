@@ -55,7 +55,7 @@
     "providers": {
       "openrouter": {
         "baseUrl": "https://openrouter.ai/api/v1",
-        "apiKey": "OPENROUTER_API_KEY_PLACEHOLDER",
+        "apiKey": "op://openclaw/openrouter/credential",
         "api": "openai-completions",
         "models": [
           {
@@ -521,7 +521,7 @@
         },
         "provider": "local",
         "remote": {
-          "apiKey": "GOOGLE_AI_API_KEY_PLACEHOLDER"
+          "apiKey": "op://openclaw/google-ai/credential"
         },
         "fallback": "gemini",
         "model": "gemini-embedding-001",
@@ -614,7 +614,7 @@
         "enabled": true,
         "provider": "perplexity",
         "perplexity": {
-          "apiKey": "PERPLEXITY_API_KEY_PLACEHOLDER"
+          "apiKey": "op://openclaw/perplexity/credential"
         }
       }
     }
@@ -662,7 +662,7 @@
       "mode": "final",
       "provider": "elevenlabs",
       "elevenlabs": {
-        "apiKey": "ELEVENLABS_API_KEY_PLACEHOLDER",
+        "apiKey": "op://openclaw/elevenlabs/credential",
         "voiceId": "8pKpsieefAaHRmwUJLqU",
         "modelId": "eleven_v3",
         "languageCode": "es",
@@ -702,13 +702,13 @@
     "telegram": {
       "enabled": true,
       "dmPolicy": "pairing",
-      "botToken": "TELEGRAM_BOT_TOKEN_PLACEHOLDER",
+      "botToken": "op://openclaw/telegram/credential",
       "groupPolicy": "allowlist",
       "streaming": "partial"
     },
     "discord": {
       "enabled": true,
-      "token": "DISCORD_BOT_TOKEN_PLACEHOLDER",
+      "token": "op://openclaw/discord/credential",
       "groupPolicy": "allowlist",
       "streaming": "off",
       "dmPolicy": "allowlist",
@@ -741,7 +741,7 @@
       },
       "accounts": {
         "default": {
-          "token": "DISCORD_BOT_TOKEN_PLACEHOLDER",
+          "token": "op://openclaw/discord/credential",
           "groupPolicy": "allowlist",
           "streaming": "off"
         }
@@ -752,7 +752,7 @@
     "voiceId": "8pKpsieefAaHRmwUJLqU",
     "modelId": "eleven_v3",
     "outputFormat": "mp3_44100_128",
-    "apiKey": "ELEVENLABS_API_KEY_PLACEHOLDER",
+    "apiKey": "op://openclaw/elevenlabs/credential",
     "interruptOnSpeech": true
   },
   "gateway": {
@@ -766,7 +766,7 @@
     },
     "auth": {
       "mode": "token",
-      "token": "WHATSAPP_TOKEN_PLACEHOLDER"
+      "token": "op://openclaw/whatsapp/credential"
     },
     "trustedProxies": [
       "100.64.0.0/10",
@@ -805,10 +805,10 @@
     "entries": {
       "sag": {
         "enabled": false,
-        "apiKey": "SAG_API_KEY_PLACEHOLDER"
+        "apiKey": "op://openclaw/sag/credential"
       },
       "notion": {
-        "apiKey": "NOTION_API_KEY_PLACEHOLDER"
+        "apiKey": "op://openclaw/notion/credential"
       },
       "sonoscli": {
         "enabled": false
