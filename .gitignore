@@ -1,0 +1,15 @@
+# Secrets - use 1Password for these
+*.env
+credentials/
+agents/
+env/
+*.token.json
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Backup files
+*.bak
+*.backup
+*~

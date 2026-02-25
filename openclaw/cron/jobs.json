@@ -1,0 +1,373 @@
+{
+  "version": 1,
+  "jobs": [
+    {
+      "id": "b4bbeebc-eb28-49fb-8c0c-4c330b0ff06f",
+      "agentId": "main",
+      "name": "daily-deals-summary",
+      "enabled": true,
+      "createdAtMs": 1769375845281,
+      "updatedAtMs": 1771974834332,
+      "schedule": {
+        "kind": "cron",
+        "expr": "10 17 * * *",
+        "tz": "America/Mexico_City"
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "Tarea: resumen diario de promos en México (MXN), priorizando HOT deals de PromoDescuentos, y revisión del carrito de Amazon al final.\n\nIMPORTANTE (herramientas):\n- Permitidas solo: web_search, web_fetch, read y browser.\n- Prohibidas: exec, cron, message, gateway y cualquier otra.\n\nProductos objetivo:\n- MacBook Pro M4/M5\n- Monitores gaming 27\"+ o ultrawide\n- Colchón Luuna One\n- Productos tracked en ~/.openclaw/workspace/data/tracked-products.json\n\nFlujo obligatorio:\n1) Busca HOT deals en PromoDescuentos con web_search (country=MX, freshness=pd|pw):\n   - site:promodescuentos.com/hot macbook pro m4 m5\n   - site:promodescuentos.com/hot monitor gamer 27 ultrawide\n   - site:promodescuentos.com/hot luuna one\n   - site:promodescuentos.com/hot teclado ipad air\n   - site:promodescuentos.com/hot mac mini\n2) Si no aparecen HOT de los productos objetivo, busca HOT generales del día en PromoDescuentos (site:promodescuentos.com/hot) y extrae hasta 3 deals relevantes.\n3) Busca en PromoDescuentos general (site:promodescuentos.com) y luego en amazon.com.mx, mercadolibre.com.mx, liverpool.com.mx.\n4) Verifica con web_fetch cada deal candidato. Si no puedes verificar precio/tienda/link vigente, descártalo.\n5) Al final, abre y revisa el carrito de Amazon México con browser en profile=\"chrome\" (https://www.amazon.com.mx/gp/cart/view.html).\n\nPaso 5 obligatorio (usar browser.act evaluate):\n- Extrae títulos del carrito activo (Carrito de compras) y precio actual.\n- Extrae cambios de precio con regex sobre el texto de la página: \"ha bajado de $X a $Y\".\n- Cruza ambos: reporta solo cambios de precio que correspondan a productos del carrito activo (ignora \"guardados para más tarde\").\n- Además, en cada item del carrito activo detecta señales de oferta condicional: textos como \"Ahorra\", \"Suma y Ahorra\", \"Cupón\", \"%\" o \"Precio de lista\".\n- Si un item del carrito activo tiene señales de oferta condicional, inclúyelo en E aunque no exista \"ha bajado\" (marca descuento como \"condicional/no visible\" cuando aplique).\n- Si hay al menos 1 coincidencia de \"ha bajado\", NO puedes responder \"No hay productos en oferta\".\n- Calcula descuento estimado = (X-Y)/X en porcentaje cuando haya X e Y.\n\nFiltros estrictos:\n- Solo México (MX/MXN).\n- Descarta EUR/USD sin equivalente MXN.\n- Descarta ofertas sin precio verificable o probablemente expiradas.\n- En carrito Amazon, incluye solo ítems con evidencia de oferta (precio rebajado/cupón/lista, o mensaje \"ha bajado de X a Y\").\n- No inventes datos ni links.\n\nCriterio para decidir CONVIENE vs ESPERAR (carrito Amazon):\n- CONVIENE: descuento >= 20% vs precio anterior/lista, o precio actual claramente por debajo del precio anterior mostrado.\n- ESPERAR: descuento bajo (<20%) o sin diferencia clara.\n\nFormato de salida (sin texto extra):\nA) HOT deals PromoDescuentos (productos objetivo, máx 5 bullets)\n- Producto — tienda — precio MXN — descuento — link — Score(0-100) — CONVIENE/ESPERAR/DESCARTAR — razón\n\nB) HOT generales PromoDescuentos (si A está vacío, máx 3 bullets)\n- mismo formato\n\nC) Otras ofertas verificadas (máx 5 bullets)\n- mismo formato\n\nD) Si no hay HOT verificables hoy en PromoDescuentos, escribe exactamente:\nNo hay HOT deals verificables hoy en PromoDescuentos para los productos objetivo.\n\nE) Carrito Amazon (solo productos en oferta)\n- Producto — precio actual MXN — precio anterior MXN (si visible) — descuento estimado — CONVIENE/ESPERAR — razón\nSi no hay productos en oferta en el carrito, escribe exactamente:\nNo hay productos en oferta en tu carrito de Amazon hoy.",
+        "model": "sonnet"
+      },
+      "state": {
+        "nextRunAtMs": 1772061000000,
+        "lastRunAtMs": 1771974602088,
+        "lastStatus": "ok",
+        "lastDurationMs": 232244,
+        "consecutiveErrors": 0,
+        "lastRunStatus": "ok",
+        "lastDelivered": true,
+        "lastDeliveryStatus": "delivered"
+      },
+      "delivery": {
+        "mode": "announce",
+        "channel": "discord",
+        "to": "1465088256382210048"
+      }
+    },
+    {
+      "id": "8e370b36-d1ca-4682-bf09-89d7392cb25c",
+      "agentId": "main",
+      "name": "daily-ai-tech-digest",
+      "enabled": true,
+      "createdAtMs": 1769381970901,
+      "updatedAtMs": 1772028093408,
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 8 * * *",
+        "tz": "America/Mexico_City"
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "Genera un digest matutino de IA y tecnología para HOY en español.\n\nInstrucciones:\n- Usa web_search para obtener noticias recientes y verificables.\n- Prioriza fuentes rápidas (X/Twitter, Reddit) y luego medios confiables.\n- No inventes enlaces, cifras ni citas.\n- Si una fuente no está disponible, escribe exactamente \"No disponible\" para ese bloque y continúa.\n- Entrega SOLO el formato de salida, sin introducciones ni texto extra.\n\nFormato obligatorio:\n1) Top 5 noticias (5 bullets, cada bullet con: titular breve + contexto de 1 línea + link)\n2) Tendencias/hype del día (máx. 3 bullets con link)\n3) Watchlist de 24h (máx. 3 bullets accionables)\n4) Riesgo/alerta relevante (1 bullet)\n\nReglas de estilo:\n- Máximo 220 palabras total.\n- Bullets cortos.\n- Sin markdown de encabezados.",
+        "model": "anthropic/claude-sonnet-4-6"
+      },
+      "state": {
+        "nextRunAtMs": 1772114400000,
+        "lastRunAtMs": 1772028000007,
+        "lastStatus": "ok",
+        "lastDurationMs": 93401,
+        "consecutiveErrors": 0,
+        "lastRunStatus": "ok",
+        "lastDelivered": true,
+        "lastDeliveryStatus": "delivered"
+      },
+      "delivery": {
+        "mode": "announce",
+        "channel": "telegram",
+        "to": "2087617505"
+      }
+    },
+    {
+      "id": "c9fcd468-42f4-4827-8edb-0fcd729c04f6",
+      "agentId": "main",
+      "name": "monthly-finance-update",
+      "enabled": true,
+      "createdAtMs": 1769454198818,
+      "updatedAtMs": 1771383374911,
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 9 1 * *",
+        "tz": "America/Mexico_City"
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "Es 1º del mes. Ejecuta esta rutina y entrega resumen final en español.\n\n1) Ejecuta:\nnode ~/.openclaw/workspace/skills/transaction/scripts/monthly-finance-update.js\n\n2) Si falla, reporta SOLO:\n- Error exacto\n- Ruta/componente faltante\n\n3) Si funciona, ejecuta:\nnode ~/.openclaw/workspace/skills/transaction/scripts/weekly-expense-summary.js\n\n4) Entrega un resumen breve con este formato:\n- ✅ Actualización mensual: OK\n- Mes actualizado en Anual: <mes>\n- Gasto semanal actual (referencia): $X MXN\n- Top 3 categorías por gasto semanal: ...\n- Alertas de presupuesto (>100%): hasta 5 categorías\n\nReglas:\n- No uses cron/message/gateway.\n- No inventes datos.\n- Si un dato no está disponible, dilo explícitamente.",
+        "model": "codex"
+      },
+      "state": {
+        "nextRunAtMs": 1772377200000,
+        "lastRunAtMs": 1771383362105,
+        "lastStatus": "ok",
+        "lastDurationMs": 12806,
+        "consecutiveErrors": 0
+      },
+      "notify": true,
+      "delivery": {
+        "mode": "announce",
+        "channel": "telegram",
+        "to": "2087617505"
+      }
+    },
+    {
+      "id": "5a4fab59-f888-4a4e-8070-aa44bc7f9b18",
+      "agentId": "main",
+      "name": "weekly-expense-summary",
+      "enabled": true,
+      "createdAtMs": 1769456445966,
+      "updatedAtMs": 1771776009970,
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 10 * * 0"
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "next-heartbeat",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "Es domingo. Genera el resumen semanal de gastos ejecutando: node ~/.openclaw/workspace/skills/transaction/scripts/weekly-expense-summary.js. Si el script falla, reporta el error exacto y ruta faltante; si funciona, envía un resumen con: 1) Total gastado esta semana, 2) Desglose por categoría, 3) Alertas de presupuesto mensual, 4) Tip de ahorro personalizado.",
+        "model": "openai-codex/gpt-5.3-codex"
+      },
+      "state": {
+        "nextRunAtMs": 1772380800000,
+        "lastRunAtMs": 1771776000592,
+        "lastStatus": "ok",
+        "lastDurationMs": 9378,
+        "consecutiveErrors": 0
+      },
+      "delivery": {
+        "mode": "announce",
+        "channel": "telegram",
+        "to": "2087617505"
+      }
+    },
+    {
+      "id": "49903273-3937-46ec-890f-1bb9b2c752b4",
+      "agentId": "main",
+      "name": "weekly-body-composition-tracking",
+      "enabled": true,
+      "createdAtMs": 1769473938903,
+      "updatedAtMs": 1771682455186,
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 8 * * 6",
+        "tz": "America/Mexico_City"
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "Recordatorio: es sábado 8:00 AM. Por favor pásame tus medidas de composición corporal para el tracking semanal (peso, % grasa, grasa visceral, etc.).",
+        "model": "openrouter/auto"
+      },
+      "state": {
+        "nextRunAtMs": 1772287200000,
+        "lastRunAtMs": 1771682451759,
+        "lastStatus": "ok",
+        "lastDurationMs": 3427,
+        "consecutiveErrors": 0
+      },
+      "delivery": {
+        "mode": "announce",
+        "channel": "telegram",
+        "to": "2087617505"
+      }
+    },
+    {
+      "id": "e47f2e11-07dd-472c-a39f-db2dbadcd94b",
+      "agentId": "main",
+      "name": "energy-aware-planner",
+      "enabled": true,
+      "notify": true,
+      "createdAtMs": 1771367030721,
+      "updatedAtMs": 1772025041274,
+      "schedule": {
+        "kind": "cron",
+        "expr": "10 7 * * 1-5",
+        "tz": "America/Mexico_City"
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "model": "sonnet",
+        "message": "Genera un Energy-Aware Planner para HOY en español.\n\nInstrucciones:\n- Usa web_search para obtener clima/condiciones del día (si no puedes, usa \"No disponible\").\n- Entrega EXACTAMENTE 5 bullets numerados, 1 línea por bullet, sin texto adicional.\n- No uses títulos, introducciones, markdown ni explicaciones.\n- No inventes datos.\n\nFormato obligatorio:\n1) Mañana: ...\n2) Medio día: ...\n3) Tarde: ...\n4) Riesgo del día: ...\n5) Acción de 20 min: ..."
+      },
+      "delivery": {
+        "mode": "announce",
+        "channel": "telegram",
+        "to": "2087617505"
+      },
+      "state": {
+        "nextRunAtMs": 1772111400000,
+        "lastRunAtMs": 1772025000967,
+        "lastStatus": "ok",
+        "lastDurationMs": 40307,
+        "consecutiveErrors": 0,
+        "lastRunStatus": "ok",
+        "lastDelivered": true,
+        "lastDeliveryStatus": "delivered"
+      }
+    },
+    {
+      "id": "7574217f-804c-466a-a3f5-41aa86573c3a",
+      "agentId": "main",
+      "name": "weekend-ops-mode",
+      "enabled": true,
+      "notify": true,
+      "createdAtMs": 1771367030740,
+      "updatedAtMs": 1771691400023,
+      "schedule": {
+        "kind": "cron",
+        "expr": "30 10 * * 6",
+        "tz": "America/Mexico_City"
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "model": "codex",
+        "message": "Genera 'Weekend Ops' en español con exactamente 5 bullets (sin intro/cierre).\n\nHerramientas permitidas: read, exec, web_search, web_fetch.\nProhibidas: nodes, cron, message, gateway.\n\nBloques (1 bullet por bloque):\n- Pagos/renovaciones\n- Calendario (3 días)\n- Señal financiera semanal\n- Compra inteligente MX\n- Reset 20 min\n\nReglas:\n1) Pagos/renovaciones: busca en memory/*.md recientes y MEMORY.md menciones de vencimientos/suscripciones/pagos próximos 7 días. Si no hay evidencia confiable: 'no disponible'.\n2) Calendario (3 días): usa solo información disponible en memoria local; no consultes nodos. Si no hay evidencia: 'no disponible'.\n3) Señal financiera semanal (OBLIGATORIO): ejecuta\n   node ~/.openclaw/workspace/skills/transaction/scripts/weekly-expense-summary.js\n   y reporta: gasto total 7 días, categoría top por gasto, y 2 alertas de presupuesto con mayor % (>=90%). Si falla, incluye error breve + 'no disponible'.\n4) Compra inteligente MX: 1 oferta real validada con web_fetch (MXN, tienda y link vigente). Si no hay: 'no disponible'.\n5) Reset 20 min: acción concreta.\n\nFormato exacto:\n- Pagos/renovaciones: ...\n- Calendario (3 días): ...\n- Señal financiera semanal: ...\n- Compra inteligente MX: ...\n- Reset 20 min: ..."
+      },
+      "delivery": {
+        "mode": "announce",
+        "channel": "telegram",
+        "to": "2087617505"
+      },
+      "state": {
+        "nextRunAtMs": 1772296200000,
+        "lastRunAtMs": 1771691400005,
+        "lastStatus": "error",
+        "lastDurationMs": 18,
+        "consecutiveErrors": 1,
+        "lastError": "model not allowed: zai/codex"
+      }
+    },
+    {
+      "id": "083163b2-e802-4f2f-b2cb-0ff5223de35e",
+      "agentId": "main",
+      "sessionKey": "agent:main:main",
+      "name": "mail-triage-transacciones",
+      "enabled": true,
+      "createdAtMs": 1771467742207,
+      "updatedAtMs": 1772046176989,
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 9,13,17,21 * * *",
+        "tz": "America/Mexico_City"
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "model": "sonnet",
+        "message": "Tarea: revisión de correo para transacciones de Noé (MX) con flujo de confirmación humana antes de registrar.\n\nObjetivo por corrida:\n1) Detectar transacciones (compras/cargos/pagos/reembolsos) en correos recientes.\n2) Revisar duplicados contra Google Sheet `Transacciones` (spreadsheetId: 1r-OnkC3Ol-IO-4yWFiol7-pxF9vLu9KDjaqbxiUXkYA).\n3) Entregar lista para que Noé confirme cuáles sí registrar.\n\nFuentes:\n- Usa exclusivamente Gmail con gog.\n- No uses himalaya.\n- Para autenticar gog, usa SIEMPRE: GOG_KEYRING_PASSWORD=`op://OpenClaw/GOG_KEYRING_PASSWORD/password` y GOG_ACCOUNT=allenlamorak@gmail.com\n- Antes de cualquier llamada a gog, resuelve el password con: `op item get GOG_KEYRING_PASSWORD --vault OpenClaw --fields password --reveal` y úsalo como env var GOG_KEYRING_PASSWORD.\n- Si gog falla, repórtalo explícitamente y termina sin fallback.\n\nReglas:\n- Ventana: últimos 3 días + no leídos actuales.\n- Extrae por transacción: fecha, comercio, monto, moneda, tipo, evidencia (asunto/remitente).\n- Solo considera cargos claros de Noé (preferentemente MXN).\n- Dedupe en Sheet: marcar como duplicada si coincide comercio similar + monto aproximado (±1 MXN) + fecha cercana (±3 días).\n- No registres nada automáticamente.\n\nFormato de salida (obligatorio, breve, español):\nA) Nuevas por confirmar (NO duplicadas)\n- <máx 10 bullets: fecha — comercio — monto — tipo — evidencia>\n\nB) Ya registradas (duplicadas detectadas)\n- <máx 10 bullets: fecha — comercio — monto — evidencia>\n\nC) Solicitud de confirmación\n- Si A tiene elementos, escribe exactamente:\n\"Confírmame cuáles de A quieres registrar en el sheet y con qué método de pago en cada una.\"\n- Si A está vacío, escribe exactamente:\n\"No encontré transacciones nuevas pendientes por registrar en el sheet.\"\n\nD) Si gog falla\n- Escribe exactamente:\n\"No pude ejecutar la revisión porque falló gog (Gmail CLI).\""
+      },
+      "delivery": {
+        "mode": "announce",
+        "channel": "telegram",
+        "to": "2087617505"
+      },
+      "state": {
+        "nextRunAtMs": 1772060400000,
+        "lastRunAtMs": 1772046001031,
+        "lastStatus": "ok",
+        "lastDurationMs": 175958,
+        "consecutiveErrors": 0,
+        "lastRunStatus": "ok",
+        "lastDeliveryStatus": "delivered",
+        "lastDelivered": true
+      }
+    },
+    {
+      "id": "93d1f797-297d-4093-af97-faf80b507f68",
+      "agentId": "main",
+      "name": "cleanup-sessions",
+      "description": "Limpia sesiones old de cron (77MB -> ~1MB)",
+      "enabled": true,
+      "createdAtMs": 1771595504821,
+      "updatedAtMs": 1772010078095,
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 3 * * *",
+        "tz": "America/Mexico_City"
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "Ejecutar /home/noestelar/.openclaw/workspace/scripts/cleanup-cron-sessions.js"
+      },
+      "delivery": {
+        "mode": "announce",
+        "channel": "last"
+      },
+      "state": {
+        "nextRunAtMs": 1772096400000,
+        "lastRunAtMs": 1772010002136,
+        "lastStatus": "ok",
+        "lastDurationMs": 75959,
+        "consecutiveErrors": 0,
+        "lastRunStatus": "ok",
+        "lastDelivered": true,
+        "lastDeliveryStatus": "delivered"
+      }
+    },
+    {
+      "id": "presupuesto-marzo-2026-1771701748799",
+      "agentId": "main",
+      "name": "presupuesto-marzo-2026",
+      "enabled": false,
+      "createdAtMs": 1771701748799,
+      "updatedAtMs": 1771701748799,
+      "schedule": {
+        "kind": "once",
+        "at": "2026-03-01T00:01:00.000Z",
+        "tz": "America/Mexico_City"
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "Ejecuta el script para aplicar los presupuestos de Marzo 2026 al sheet de finanzas. El script está en: /home/noestelar/.openclaw/workspace/finanzas/aplicar-presupuesto-marzo.js\n\nComando: node /home/noestelar/.openclaw/workspace/finanzas/aplicar-presupuesto-marzo.js\n\nConfirma cuando esté listo y reporta el total del presupuesto.",
+        "model": "glm-5"
+      },
+      "delivery": {
+        "mode": "announce",
+        "channel": "telegram",
+        "to": "2087617505"
+      },
+      "state": {
+        "scheduleErrorCount": 3,
+        "lastError": "schedule error: TypeError: Cannot read properties of undefined (reading 'trim')"
+      }
+    },
+    {
+      "id": "gog-token-refresh-daily",
+      "agentId": "main",
+      "name": "gog-token-refresh",
+      "enabled": true,
+      "createdAtMs": 1771895700000,
+      "updatedAtMs": 1772020835146,
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 6 * * *",
+        "tz": "America/Mexico_City"
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "Ejecuta el script de mantenimiento del token de gog: /home/noestelar/.openclaw/cron/gog-token-refresh.sh",
+        "model": "sonnet"
+      },
+      "state": {
+        "nextRunAtMs": 1772107200000,
+        "lastRunAtMs": 1772020800654,
+        "lastRunStatus": "ok",
+        "lastStatus": "ok",
+        "lastDurationMs": 34492,
+        "lastDelivered": true,
+        "lastDeliveryStatus": "delivered",
+        "consecutiveErrors": 0
+      },
+      "delivery": {
+        "mode": "silent"
+      }
+    }
+  ]
+}
