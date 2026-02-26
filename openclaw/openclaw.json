@@ -702,7 +702,7 @@
     "telegram": {
       "enabled": true,
       "dmPolicy": "pairing",
-      "botToken": "op://openclaw/telegram/credential",
+      "botToken": "YOUR_TELEGRAM_BOT_TOKEN_HERE",
       "groupPolicy": "allowlist",
       "streaming": "partial"
     },
@@ -741,7 +741,7 @@
       },
       "accounts": {
         "default": {
-          "token": "op://openclaw/discord/credential",
+"token": "YOUR_DISCORD_BOT_TOKEN_HERE",
           "groupPolicy": "allowlist",
           "streaming": "off"
         }
@@ -761,12 +761,19 @@
     "bind": "loopback",
     "controlUi": {
       "allowedOrigins": [
-        "https://alia.tailce9ba7.ts.net"
+        "https://bazzite.tailce9ba7.ts.net",
+        "https://alia.tailce9ba7.ts.net",
+        "http://127.0.0.1:18789",
+        "http://localhost:18789"
       ]
     },
     "auth": {
       "mode": "token",
-      "token": "op://openclaw/whatsapp/credential"
+      "token": "f575a5f5662c0d36dc1c6778fcb8c4225fcd9a125ecb1269"
+    },
+    "remote": {
+      "url": "wss://bazzite.tailce9ba7.ts.net",
+      "token": "f575a5f5662c0d36dc1c6778fcb8c4225fcd9a125ecb1269"
     },
     "trustedProxies": [
       "100.64.0.0/10",

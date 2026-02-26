@@ -1,22 +1,23 @@
 [Unit]
-Description=OpenClaw Gateway (v2026.2.24)
+Description=OpenClaw Gateway (v2026.2.25)
 After=network-online.target
 Wants=network-online.target
 
 [Service]
-ExecStart=/home/noestelar/.local/share/fnm/node-versions/v24.13.0/installation/bin/node /home/noestelar/.local/share/fnm/node-versions/v24.13.0/installation/lib/node_modules/openclaw/dist/index.js gateway --port 18789
+ExecStart=/var/home/linuxbrew/.linuxbrew/Cellar/node/25.6.1_1/bin/node /var/home/linuxbrew/.linuxbrew/lib/node_modules/openclaw/dist/index.js gateway --port 18789
 Restart=always
 RestartSec=5
 KillMode=process
 Environment=HOME=/home/noestelar
 Environment=TMPDIR=/tmp
-Environment=PATH=/home/noestelar/.local/share/pnpm:/home/noestelar/.bun/bin:/home/noestelar/.local/share/fnm/current/bin:/home/noestelar/.local/bin:/home/noestelar/.npm-global/bin:/home/noestelar/bin:/home/noestelar/.volta/bin:/home/noestelar/.asdf/shims:/home/noestelar/.nvm/current/bin:/home/noestelar/.fnm/current/bin:/usr/local/bin:/usr/bin:/bin
+Environment=PATH=/home/noestelar/.local/bin:/home/noestelar/.npm-global/bin:/home/noestelar/bin:/home/noestelar/.volta/bin:/home/noestelar/.asdf/shims:/home/noestelar/.bun/bin:/home/noestelar/.nvm/current/bin:/home/noestelar/.fnm/current/bin:/home/noestelar/.local/share/pnpm:/usr/local/bin:/usr/bin:/bin
 Environment=OPENCLAW_GATEWAY_PORT=18789
 Environment=OPENCLAW_GATEWAY_TOKEN=f575a5f5662c0d36dc1c6778fcb8c4225fcd9a125ecb1269
 Environment=OPENCLAW_SYSTEMD_UNIT=openclaw-gateway.service
 Environment=OPENCLAW_SERVICE_MARKER=openclaw
 Environment=OPENCLAW_SERVICE_KIND=gateway
-Environment=OPENCLAW_SERVICE_VERSION=2026.2.24
+Environment=OPENCLAW_SERVICE_VERSION=2026.2.25
+EnvironmentFile=/home/noestelar/.openclaw/credentials/1password.env
 
 [Install]
 WantedBy=default.target
