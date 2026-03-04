@@ -70,6 +70,11 @@ ln -sf ~/dotfiles/openclaw/openclaw.json ~/.openclaw/openclaw.json
 ln -sf ~/dotfiles/openclaw/cron/jobs.json ~/.openclaw/cron/jobs.json
 ln -sf ~/dotfiles/openclaw/settings/voicewake.json ~/.openclaw/settings/voicewake.json
 
+# Optional: desktop automation helpers (kwin-mcp experimental)
+mkdir -p ~/.local/bin
+ln -sf ~/dotfiles/openclaw/bin/kwin-mcp-run ~/.local/bin/kwin-mcp-run
+ln -sf ~/dotfiles/openclaw/bin/kwin-mcp-cleanup ~/.local/bin/kwin-mcp-cleanup
+
 # Inject environment variables from 1Password
 op inject -i ~/dotfiles/openclaw/env/clawdbot.env.tmpl -o ~/.openclaw/env/clawdbot.env
 ```
@@ -108,6 +113,9 @@ systemctl --user status openclaw-gateway.service
 | `openclaw.json` | Main gateway config (API keys stored as 1Password references) |
 | `cron/jobs.json` | Scheduled tasks |
 | `settings/voicewake.json` | Voice wake settings |
+| `bin/kwin-mcp-run` | Wrapper to run kwin-mcp and auto-clean orphaned sessions |
+| `bin/kwin-mcp-cleanup` | Manual cleanup for stuck virtual KWin sessions |
+| `kwin-mcp/README.md` | Notes for experimental KDE/Wayland desktop automation |
 | `env/clawdbot.env.tmpl` | Environment variables template |
 
 ### Systemd (`systemd/`)
@@ -249,6 +257,11 @@ dotfiles/
 │   │   └── jobs.json
 │   ├── settings/
 │   │   └── voicewake.json
+│   ├── bin/
+│   │   ├── kwin-mcp-run
+│   │   └── kwin-mcp-cleanup
+│   ├── kwin-mcp/
+│   │   └── README.md
 │   └── env/
 │       └── clawdbot.env.tmpl
 ├── systemd/

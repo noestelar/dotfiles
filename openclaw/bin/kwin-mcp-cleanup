@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# kwin-mcp-cleanup: kill orphaned kwin_wayland --virtual sessions.
+# Safe to run anytime; does not target the host compositor process.
+
+set -u
+
+count=0
+while IFS= read -r line; do
+  pid="$(awk '{print $1}' <<<"$line")"
+  args="$(cut -d' ' -f2- <<<"$line")"
+
+  [[ "$args" != *"kwin_wayland --virtual"* ]] && continue
+  kill "$pid" 2>/dev/null && count=$((count + 1)) || true
+done < <(ps -eo pid,args 2>/dev/null)
+
+# Also kill leftover wrapper/session names
+pkill -f "wayland-mcp-[0-9]+-[0-9]+" 2>/dev/null || true
+
+if [[ "$count" -eq 0 ]]; then
+  echo "No orphaned virtual KWin sessions found."
+else
+  echo "Killed $count orphaned virtual KWin session(s)."
+fi
