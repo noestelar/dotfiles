@@ -61,40 +61,46 @@ if [[ ! -f "$SYSTEMD_USER/openclaw-gateway.service" ]]; then
   log "Installed openclaw-gateway.service"
 fi
 
-# --- KDE / Desktop configs ---
+# --- Linux-only configs (KDE / Desktop / Gaming) ---
+if [[ "$(uname)" == "Linux" ]]; then
+  log "Linux detected — installing KDE/gaming configs..."
 
-# keyd (Mac-style keyboard)
-if [[ -f "$DOTFILES_DIR/keyd/default.conf" ]]; then
-  log "keyd config: requires sudo to install"
-  log "  sudo cp $DOTFILES_DIR/keyd/default.conf /etc/keyd/default.conf"
-  log "  sudo systemctl enable --now keyd"
+  # keyd (Mac-style keyboard)
+  if [[ -f "$DOTFILES_DIR/keyd/default.conf" ]]; then
+    log "keyd config: requires sudo to install"
+    log "  sudo cp $DOTFILES_DIR/keyd/default.conf /etc/keyd/default.conf"
+    log "  sudo systemctl enable --now keyd"
+  fi
+
+  # Ghostty (Linux version with Ctrl-based Mac keybinds)
+  mkdir -p "$HOME/.config/ghostty"
+  cp -n "$DOTFILES_DIR/ghostty/config" "$HOME/.config/ghostty/config" 2>/dev/null && log "Installed ghostty config" || log "ghostty config already exists"
+
+  # environment.d (gaming + gog)
+  mkdir -p "$HOME/.config/environment.d"
+  for f in "$DOTFILES_DIR/environment.d/"*.conf; do
+    fname=$(basename "$f")
+    cp -n "$f" "$HOME/.config/environment.d/$fname" 2>/dev/null && log "Installed environment.d/$fname" || log "environment.d/$fname already exists"
+  done
+
+  # MangoHud
+  mkdir -p "$HOME/.config/MangoHud"
+  cp -n "$DOTFILES_DIR/mangohud/MangoHud.conf" "$HOME/.config/MangoHud/MangoHud.conf" 2>/dev/null && log "Installed MangoHud config" || log "MangoHud config already exists"
+
+  # KWin decoration (Mac-style buttons)
+  if command -v kwriteconfig6 >/dev/null 2>&1; then
+    kwriteconfig6 --file kwinrc --group org.kde.kdecoration2 --key ButtonsOnLeft "XIA"
+    kwriteconfig6 --file kwinrc --group org.kde.kdecoration2 --key ButtonsOnRight ""
+    log "Applied Mac-style window buttons"
+  fi
+
+  # KRFB (VNC)
+  mkdir -p "$HOME/.config"
+  cp -n "$DOTFILES_DIR/krfb/krfbrc" "$HOME/.config/krfbrc" 2>/dev/null && log "Installed krfbrc" || log "krfbrc already exists"
+
+else
+  log "macOS detected — skipping Linux-only configs (keyd, KDE, gaming, etc.)"
 fi
-
-# Ghostty
-mkdir -p "$HOME/.config/ghostty"
-cp -n "$DOTFILES_DIR/ghostty/config" "$HOME/.config/ghostty/config" 2>/dev/null && log "Installed ghostty config" || log "ghostty config already exists"
-
-# environment.d (gaming + gog)
-mkdir -p "$HOME/.config/environment.d"
-for f in "$DOTFILES_DIR/environment.d/"*.conf; do
-  fname=$(basename "$f")
-  cp -n "$f" "$HOME/.config/environment.d/$fname" 2>/dev/null && log "Installed environment.d/$fname" || log "environment.d/$fname already exists"
-done
-
-# MangoHud
-mkdir -p "$HOME/.config/MangoHud"
-cp -n "$DOTFILES_DIR/mangohud/MangoHud.conf" "$HOME/.config/MangoHud/MangoHud.conf" 2>/dev/null && log "Installed MangoHud config" || log "MangoHud config already exists"
-
-# KWin decoration (Mac-style buttons)
-if [[ -f "$DOTFILES_DIR/kwin/decoration.conf" ]]; then
-  kwriteconfig6 --file kwinrc --group org.kde.kdecoration2 --key ButtonsOnLeft "XIA"
-  kwriteconfig6 --file kwinrc --group org.kde.kdecoration2 --key ButtonsOnRight ""
-  log "Applied Mac-style window buttons"
-fi
-
-# KRFB (VNC)
-mkdir -p "$HOME/.config"
-cp -n "$DOTFILES_DIR/krfb/krfbrc" "$HOME/.config/krfbrc" 2>/dev/null && log "Installed krfbrc" || log "krfbrc already exists"
 
 log ""
 log "Done! Next steps:"
