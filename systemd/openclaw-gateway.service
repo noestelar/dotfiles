@@ -4,7 +4,7 @@ After=network-online.target
 Wants=network-online.target
 
 [Service]
-ExecStart=/var/home/linuxbrew/.linuxbrew/opt/node/bin/node /var/home/linuxbrew/.linuxbrew/lib/node_modules/openclaw/dist/entry.js gateway --port 18789
+ExecStart=/usr/bin/node /home/noestelar/.npm-global/lib/node_modules/openclaw/dist/entry.js gateway --port 18789
 Restart=always
 RestartSec=5
 TimeoutStopSec=30
@@ -12,6 +12,7 @@ TimeoutStartSec=30
 SuccessExitStatus=0 143
 KillMode=control-group
 Environment=HOME=/home/noestelar
+EnvironmentFile=/home/noestelar/.openclaw/credentials/1password.env
 Environment=TMPDIR=/tmp
 Environment=PATH=/home/noestelar/.local/bin:/home/noestelar/.npm-global/bin:/home/noestelar/bin:/home/noestelar/.volta/bin:/home/noestelar/.asdf/shims:/home/noestelar/.bun/bin:/home/noestelar/.nvm/current/bin:/home/noestelar/.fnm/current/bin:/home/noestelar/.local/share/pnpm:/usr/local/bin:/usr/bin:/bin
 Environment=OPENCLAW_GATEWAY_PORT=18789
