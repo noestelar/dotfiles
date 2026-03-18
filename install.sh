@@ -6,6 +6,11 @@ set -euo pipefail
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 log() { echo "[dotfiles] $*"; }
 
+ask() {
+  read -rp "[dotfiles] $1 [y/N] " answer
+  [[ "$answer" =~ ^[Yy] ]]
+}
+
 IS_MAC=false
 IS_LINUX=false
 if [[ "$(uname)" == "Darwin" ]]; then
@@ -102,10 +107,19 @@ if [[ "$IS_LINUX" == true ]]; then
 fi
 
 log ""
-log "Done!"
+log "Core dotfiles installed!"
+
+# --- Extras (dev runtimes, gaming, QMK) ---
+if [[ -f "$DOTFILES_DIR/extras/install.sh" ]]; then
+  if ask "Install extras (dev runtimes, gaming configs, QMK)?"; then
+    bash "$DOTFILES_DIR/extras/install.sh"
+  fi
+fi
+
+log ""
+log "All done!"
 if [[ "$IS_MAC" == true ]]; then
   log "Next: op signin && tailscale up"
 elif [[ "$IS_LINUX" == true ]]; then
   log "Next: sudo cp $DOTFILES_DIR/keyd/default.conf /etc/keyd/ && sudo systemctl enable --now keyd"
-  log "For gaming/QMK setup, see: github.com/noestelar/setup-tools"
 fi
