@@ -1,0 +1,29 @@
+# Added by OrbStack: 'orb' SSH host for Linux machines
+# This only works if it's at the top of ssh_config (before any Host blocks).
+# This won't be added again if you remove it.
+Include ~/.orbstack/ssh/config
+
+# ── GitHub: Personal account (noe-ali) ──
+Host github-personal
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/keys/github-personal.pub
+    IdentitiesOnly yes
+
+# ── GitHub: Work / Starlight account ──
+Host github-work
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/keys/github-work.pub
+    IdentitiesOnly yes
+
+# ── Highvern bastion (meetingbot) ──
+Host highvern-meetingbot
+    HostName 4.223.142.91
+    User StarlightLocalAdmin
+    IdentityFile ~/.ssh/keys/highvern-db.pub
+    IdentitiesOnly yes
+
+# ── Default: 1Password agent for everything ──
+Host *
+    IdentityAgent "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"

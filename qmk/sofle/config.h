@@ -1,4 +1,0 @@
-#pragma once
-
-// 5 layers: QWERTY, LOWER, RAISE, ADJUST, GAMING
-#define DYNAMIC_KEYMAP_LAYER_COUNT 5
