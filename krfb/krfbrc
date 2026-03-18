@@ -1,0 +1,13 @@
+[FrameBuffer]
+preferredFrameBufferPlugin=pw
+
+[General]
+allowDesktopControl=true
+allowUnattendedAccess=true
+askOnConnect=false
+desktopPassword=aWlub2s0bTE=
+noWallet=true
+unattendedPassword=aWlub2s0bTE=
+
+[Security]
+allowUnattendedAccess=true
