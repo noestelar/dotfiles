@@ -1,0 +1,36 @@
+# Alia — dark theme for long sessions
+# Derived from Ghostty's "Mathias" palette, but softened for all-day use:
+#  - background lifted off pure black (#000) to a blue-tinted near-black,
+#    which kills the halation/eye-strain of #000 on OLED + high contrast
+#  - magenta (#B62EB2) is the identity accent: cursor + selection
+#  - cyan (#67D9F0) is the secondary accent: matches the cursor-warp shader
+#  - normal colors desaturated slightly; bright colors kept vivid for diffs/logs
+
+# --- normal ---
+palette = 0=#1A1D26
+palette = 1=#F2557B
+palette = 2=#A6E32D
+palette = 3=#FC951E
+palette = 4=#7AA2F7
+palette = 5=#B62EB2
+palette = 6=#67D9F0
+palette = 7=#C8CCD8
+
+# --- bright ---
+palette = 8=#4A5062
+palette = 9=#FF7A9C
+palette = 10=#C3F55C
+palette = 11=#FFC14D
+palette = 12=#A6C1FF
+palette = 13=#E86FE0
+palette = 14=#9AE9FA
+palette = 15=#F2F4FA
+
+background = #0F1117
+foreground = #C8CCD8
+
+cursor-color = #B62EB2
+cursor-text = #0F1117
+
+selection-background = #33243D
+selection-foreground = #F2F4FA

@@ -1,0 +1,65 @@
+# ============================================================
+#  Ghostty — Noé · BASE (shared, cross-platform safe)
+#  Managed in ~/Workspace/dotfiles/ghostty (symlinked to ~/.config/ghostty)
+#  This file must contain ONLY keys valid on every platform.
+#  Platform overlays live in os/linux and os/darwin and pull this in.
+# ============================================================
+
+# --- Theme -------------------------------------------------
+# "alia": Mathias-derived, blue-tinted near-black + magenta/cyan accents.
+theme = alia
+
+# --- Font --------------------------------------------------
+# JetBrainsMono Nerd Font: tall x-height, unambiguous 0/O/1/l/I,
+# and it ships the Nerd Font glyphs starship/nvim/eza need.
+font-family = JetBrainsMono Nerd Font
+font-size = 13
+font-thicken = true
+font-feature = calt
+font-feature = liga
+adjust-cell-height = 12%
+
+# --- Cursor ------------------------------------------------
+cursor-style = block
+cursor-style-blink = false
+cursor-opacity = 0.9
+shell-integration-features = no-cursor
+
+# --- Cursor-warp shader ------------------------------------
+# Magenta->cyan trail drawn when the cursor jumps between panes/lines.
+custom-shader = shaders/cursor_warp.glsl
+custom-shader-animation = true
+
+# --- Window ------------------------------------------------
+background-opacity = 0.92
+background-blur = 20
+window-padding-x = 14
+window-padding-y = 10,6
+window-padding-balance = true
+window-inherit-working-directory = true
+window-decoration = true
+
+# --- Splits ------------------------------------------------
+unfocused-split-opacity = 0.88
+unfocused-split-fill = #0F1117
+split-divider-color = #33243D
+
+# --- Selection & mouse -------------------------------------
+copy-on-select = clipboard
+mouse-hide-while-typing = true
+link-url = true
+
+# --- Scrollback --------------------------------------------
+scrollback-limit = 100000
+
+# --- Behavior ----------------------------------------------
+confirm-close-surface = true
+window-save-state = always
+clipboard-trim-trailing-spaces = true
+clipboard-paste-protection = true
+
+# --- Bell --------------------------------------------------
+bell-features = no-audio,attention,title
+
+# --- Universal keybinds ------------------------------------
+keybind = ctrl+f=write_scrollback_file:open

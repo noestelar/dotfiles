@@ -1,0 +1,73 @@
+# ============================================================
+#  Shell — Noé (zsh, shared between Linux and macOS)
+#  Sourced from ~/.zshrc on each machine.
+# ============================================================
+
+# --- Completion system --------------------------------------
+autoload -Uz compinit
+# Cache the completion dump; regenerate only once a day.
+_comp_dump="$HOME/.cache/zsh/zcompdump"
+mkdir -p "$HOME/.cache/zsh"
+if [[ -n "$_comp_dump"(#qN.mh+24) ]]; then
+  compinit -d "$_comp_dump"
+else
+  compinit -C -d "$_comp_dump"
+fi
+
+# Case-insensitive, partial-word, and hyphen/underscore-tolerant matching.
+zstyle ':completion:*' matcher-list \
+  'm:{a-zA-Z}={A-Za-z}' \
+  'r:|[._-]=* r:|=*' \
+  'l:|=* r:|=*'
+# Menu-driven completion with colors.
+zstyle ':completion:*' menu select
+zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+# Group and describe results.
+zstyle ':completion:*' group-name ''
+zstyle ':completion:*:descriptions' format '%F{yellow}── %d ──%f'
+# Cache expensive completions (brew, go, etc.).
+zstyle ':completion:*' use-cache on
+zstyle ':completion:*' cache-path "$HOME/.cache/zsh/completions"
+
+# --- Autosuggestions (ghost text) ----------------------------
+# Accept with -> or End; Ctrl+Space accepts, Alt+-> accepts one word.
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
+ZSH_AUTOSUGGEST_STRATEGY=(history completion)
+ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
+
+# --- History -------------------------------------------------
+HISTSIZE=100000
+SAVEHIST=100000
+HISTFILE="$HOME/.zsh_history"
+setopt SHARE_HISTORY
+setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_IGNORE_SPACE
+setopt HIST_REDUCE_BLANKS
+setopt HIST_VERIFY
+setopt INC_APPEND_HISTORY
+
+# --- Load order: plugins AFTER completion init ---------------
+# Autosuggestions first, then syntax highlighting (must be last).
+_plugin_loaded=0
+for _f in \
+  /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh \
+  /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh \
+  /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh \
+  "$HOME/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh"; do
+  [[ -r "$_f" ]] && { source "$_f"; _plugin_loaded=1; break; }
+done
+
+for _f in \
+  /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh \
+  /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh \
+  /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh \
+  "$HOME/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"; do
+  [[ -r "$_f" ]] && { source "$_f"; break; }
+done
+unset _f _plugin_loaded _comp_dump
+
+# --- fzf (if installed) --------------------------------------
+# Ctrl+R history, Ctrl+T files, Alt+C cd — fuzzy.
+if command -v fzf >/dev/null 2>&1; then
+  eval "$(fzf --zsh 2>/dev/null)" || source /usr/share/fzf/key-bindings.zsh 2>/dev/null
+fi
