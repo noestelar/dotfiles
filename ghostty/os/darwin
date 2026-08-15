@@ -1,12 +1,89 @@
-# Ghostty — macOS entrypoint (deploy to ~/.config/ghostty/config on macOS)
-config-file = ?base
+# ============================================================
+#  Ghostty Configuration — macOS (Standalone & Self-Contained)
+# ============================================================
 
+# --- Theme & Colors (Alia Theme embedded for exact macOS rendering) ---
+theme = alia
+background = #0F1117
+foreground = #C8CCD8
+
+cursor-color = #B62EB2
+cursor-text = #0F1117
+
+selection-background = #33243D
+selection-foreground = #F2F4FA
+
+# Palette
+palette = 0=#1A1D26
+palette = 1=#F2557B
+palette = 2=#A6E32D
+palette = 3=#FC951E
+palette = 4=#7AA2F7
+palette = 5=#B62EB2
+palette = 6=#67D9F0
+palette = 7=#C8CCD8
+palette = 8=#4A5062
+palette = 9=#FF7A9C
+palette = 10=#C3F55C
+palette = 11=#FFC14D
+palette = 12=#A6C1FF
+palette = 13=#E86FE0
+palette = 14=#9AE9FA
+palette = 15=#F2F4FA
+
+# --- Font Settings ---
+font-family = JetBrainsMono Nerd Font
+font-size = 13
+font-thicken = true
+font-feature = calt
+font-feature = liga
+adjust-cell-height = 12%
+
+# --- Cursor & Shader ---
+cursor-style = block
+cursor-style-blink = false
+cursor-opacity = 0.9
+shell-integration-features = no-cursor
+
+custom-shader = shaders/cursor_warp.glsl
+custom-shader-animation = true
+
+# --- Window Appearance (Equalized for macOS) ---
+background-opacity = 0.95
+background-blur-radius = 20
+window-padding-x = 14
+window-padding-y = 10,6
+window-padding-balance = true
+window-inherit-working-directory = true
+window-decoration = true
+
+# macOS Native Titlebar & Chrome
 macos-titlebar-style = tabs
 macos-icon = glass
 macos-titlebar-proxy-icon = hidden
 macos-option-as-alt = true
 
-# Native macOS chords (super = Cmd).
+# --- Splits ---
+unfocused-split-opacity = 0.88
+unfocused-split-fill = #0F1117
+split-divider-color = #33243D
+
+# --- Mouse & Clipboard ---
+copy-on-select = clipboard
+mouse-hide-while-typing = true
+link-url = true
+
+# --- Behavior ---
+scrollback-limit = 100000
+confirm-close-surface = true
+window-save-state = always
+clipboard-trim-trailing-spaces = true
+clipboard-paste-protection = true
+
+# --- Bell ---
+bell-features = no-audio,attention,title
+
+# --- Keybindings (macOS Native Cmd / Super) ---
 keybind = super+d=new_split:right
 keybind = super+shift+d=new_split:down
 keybind = super+w=close_surface
@@ -23,5 +100,4 @@ keybind = super+equal=increase_font_size:1
 keybind = super+minus=decrease_font_size:1
 keybind = super+0=reset_font_size
 keybind = super+shift+comma=reload_config
-
-config-file = ?local
+keybind = ctrl+f=write_scrollback_file:open
