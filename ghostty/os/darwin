@@ -48,9 +48,9 @@ shell-integration-features = no-cursor
 custom-shader = shaders/cursor_warp.glsl
 custom-shader-animation = true
 
-# --- Window Appearance (Equalized for macOS) ---
-background-opacity = 0.95
-background-blur-radius = 20
+# --- Window Appearance (Solid #0F1117 background for 100% Linux/macOS parity) ---
+background-opacity = 1
+background-blur = false
 window-padding-x = 14
 window-padding-y = 10,6
 window-padding-balance = true
