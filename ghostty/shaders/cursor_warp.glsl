@@ -71,13 +71,13 @@ vec2 getRectangleCenter(vec4 rectangle) {
     return vec2(rectangle.x + (rectangle.z / 2.), rectangle.y - (rectangle.w / 2.));
 }
 
-// --- Alia palette: magenta core -> cyan accent (matches cursor #B62EB2) ---
-const vec4 TRAIL_COLOR = vec4(0.714, 0.180, 0.698, 1.0); // #B62EB2 magenta
+// --- Alia palette: magenta core -> cyan accent (vibrant glow for Metal & GL) ---
+const vec4 TRAIL_COLOR = vec4(0.85, 0.22, 0.85, 1.0);        // Electric Magenta #D938D9
 const vec4 CURRENT_CURSOR_COLOR = TRAIL_COLOR;
 const vec4 PREVIOUS_CURSOR_COLOR = TRAIL_COLOR;
-const vec4 TRAIL_COLOR_ACCENT = vec4(0.404, 0.851, 0.941, 1.0); // #67D9F0 cyan
+const vec4 TRAIL_COLOR_ACCENT = vec4(0.45, 0.92, 1.0, 1.0);   // Vibrant Cyan #73EBFF
 const float DURATION = .45;
-const float OPACITY = .35;
+const float OPACITY = .45;
 // Don't draw trail within that distance * cursor size.
 // This prevents trails from appearing when typing.
 const float DRAW_THRESHOLD = 1.5;
@@ -137,7 +137,9 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 
         newColor = mix(newColor, TRAIL_COLOR_ACCENT, 1.0 - smoothstep(sdfTrail, -0.01, 0.001));
         newColor = mix(newColor, TRAIL_COLOR, antialising(sdfTrail));
-        newColor = mix(fragColor, newColor, 1.0 - alphaModifier);
+        // Add subtle brightness boost for rich/vibrant glow across platforms
+        newColor.rgb *= 1.25;
+        newColor = mix(fragColor, newColor, (1.0 - alphaModifier) * OPACITY * 2.0);
         fragColor = mix(newColor, fragColor, step(sdfCursor, 0));
     }
 }
